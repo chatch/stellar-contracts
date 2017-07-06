@@ -1,0 +1,36 @@
+{
+  "name": "stellar-contracts-components",
+  "version": "0.0.1",
+  "description": "React Components for working with Stellar 'Simple Contracts'",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chatch/stellar-contracts-components.git"
+  },
+  "keywords": [
+    "stellar",
+    "react"
+  ],
+  "author": "Chris Hatch",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/chatch/stellar-contracts-components/issues"
+  },
+  "homepage": "https://github.com/chatch/stellar-contracts-components#readme",
+  "dependencies": {
+    "react": "^15.6.1",
+    "react-bootstrap": "^0.31.0",
+    "react-dom": "^15.6.1",
+    "react-jsonschema-form": "^0.49.0",
+    "react-router-dom": "^4.1.1",
+    "react-scripts": "1.0.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
