@@ -8,21 +8,17 @@ body,
   padding: 10px;
 }
 
-.App-main {
-  margin-top: 30px;
-}
-
 .Network-Selector {
-  margin: 5px 0;
 }
 
 .Network-Selector button {
-  display: inline-block;
-  cursor: pointer;
-  background: #333;
-  color: #ccc;
+  background: white;
   border: none;
-  border-radius: 2px;
+  border-radius: 3px;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 10px;
 }
 
 .Network-Selector button:focus {

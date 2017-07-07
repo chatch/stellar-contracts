@@ -52,7 +52,7 @@ class App extends Component {
               <Navbar.Header>
                 <Navbar.Brand>
                   <Link to="/">
-                    <span className="brand-text">Contracts</span>
+                    <span className="brand-text">Stellar Contracts</span>
                   </Link>
                 </Navbar.Brand>
                 <Navbar.Toggle />
@@ -60,7 +60,7 @@ class App extends Component {
               <Navbar.Collapse>
                 <Nav>
                   <LinkContainer to="/">
-                    <NavItem>Home</NavItem>
+                    <NavItem>Menu</NavItem>
                   </LinkContainer>
                 </Nav>
                 <Navbar.Form pullRight>

@@ -1,6 +1,10 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
 
+import {withServer} from '../../utils'
+import contracts from '../../contracts-api'
+const icoContract = contracts.ico
+
 const schema = {
   title: 'ICO - Issue a New Token',
   description: 'Issue a token on the Stellar Network',
@@ -43,6 +47,8 @@ const uiSchema = {
 class ICO extends React.Component {
   handleOnSubmit = ({formData}) => {
     console.log(`FORM DATA: ${JSON.stringify(formData)}`)
+    console.log(`Server network: ${this.props.server.serverURL}`)
+    icoContract(this.props.server, formData)
   }
 
   render() {
@@ -56,4 +62,4 @@ class ICO extends React.Component {
   }
 }
 
-export default ICO
+export default withServer(ICO)
