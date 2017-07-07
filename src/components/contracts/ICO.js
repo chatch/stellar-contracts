@@ -1,15 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-
 import Form from 'react-jsonschema-form'
 
 const schema = {
-  title: 'ICO - Issue a Token',
+  title: 'ICO - Issue a New Token',
   description: 'Issue a token on the Stellar Network',
   type: 'object',
   required: ['assetCode', 'numOfTokens'],
   properties: {
-    assetCode: {type: 'string', title: 'Asset Code'},
+    assetCode: {type: 'string', title: 'Asset Code', maxLength: 12},
     numOfTokens: {type: 'integer', title: 'Tokens'},
     limit: {type: 'integer', title: 'Limit'},
     issuingAccount: {type: 'string', title: 'Issuing Account'},
@@ -20,7 +18,8 @@ const schema = {
 // add this to the description : .&nbsp;<a href='https://www.stellar.org/developers/guides/concepts/assets.html#anchors-issuing-assets'>See details on supported formats here.</a>",
 const uiSchema = {
   assetCode: {
-    'ui:description': '4 or 12 character asset code',
+    'ui:description':
+      'Choose a code up to 12 character long using only alphanumeric characters. Currencies should map to an ISO 4127 code, stocks and bonds to an appropriate ISIN number',
     'ui:placeholder': 'eg. BEAN',
   },
   numOfTokens: {
@@ -42,8 +41,18 @@ const uiSchema = {
 }
 
 class ICO extends React.Component {
+  handleOnSubmit = ({formData}) => {
+    console.log(`FORM DATA: ${JSON.stringify(formData)}`)
+  }
+
   render() {
-    return <Form schema={schema} uiSchema={uiSchema} />
+    return (
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        onSubmit={this.handleOnSubmit}
+      />
+    )
   }
 }
 
