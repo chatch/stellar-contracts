@@ -1,5 +1,7 @@
-import Token from './token'
 import sdk from 'stellar-sdk'
+
+import Token from './token'
+import JointAccount from './joint_account'
 
 class Contracts {
   constructor(server) {
@@ -8,6 +10,10 @@ class Contracts {
 
   token() {
     return new Token(sdk, this.server)
+  }
+
+  jointAccount() {
+    return new JointAccount(sdk, this.server)
   }
 }
 

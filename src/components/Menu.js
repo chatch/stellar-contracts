@@ -9,6 +9,11 @@ const contracts = [
     description: 'Issue a New Token',
   },
   {
+    path: '/jointaccount',
+    name: 'JointAccount',
+    description: 'Joint Accounts',
+  },
+  {
     path: '/bond',
     name: 'Bond',
     description: 'Issue Bonds [TODO]',

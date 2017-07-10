@@ -8,6 +8,7 @@ import Menu from './components/Menu'
 import NetworkSelector from './components/NetworkSelector'
 import NoMatch from './components/NoMatch'
 import Token from './components/contracts/Token'
+import JointAccount from './components/contracts/JointAccount'
 
 import {networks} from './stellar'
 import {storageInit} from './utils'
@@ -77,6 +78,7 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={Menu} />
                 <Route exact path="/token" component={Token} />
+                <Route exact path="/jointaccount" component={JointAccount} />
                 <Route component={NoMatch} />
               </Switch>
             </Row>
