@@ -4,8 +4,8 @@ import {Link} from 'react-router-dom'
 
 const contracts = [
   {
-    path: '/ico',
-    name: 'ICO',
+    path: '/token',
+    name: 'Token',
     description: 'Issue a New Token',
   },
   {
@@ -23,7 +23,7 @@ class Menu extends React.Component {
           <h3>Contracts</h3>
         </Row>
         {contracts.map(c =>
-          <Row>
+          <Row key={c.name}>
             <Col md={3}>
               <Link to={c.path}>
                 {c.name}

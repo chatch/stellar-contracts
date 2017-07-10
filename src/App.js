@@ -7,7 +7,7 @@ import {Grid, Row, Nav, Navbar, NavItem} from 'react-bootstrap'
 import Menu from './components/Menu'
 import NetworkSelector from './components/NetworkSelector'
 import NoMatch from './components/NoMatch'
-import ICO from './components/contracts/ICO'
+import Token from './components/contracts/Token'
 
 import {networks} from './stellar'
 import {storageInit} from './utils'
@@ -76,7 +76,7 @@ class App extends Component {
             <Row className="App-main">
               <Switch>
                 <Route exact path="/" component={Menu} />
-                <Route exact path="/ico" component={ICO} />
+                <Route exact path="/token" component={Token} />
                 <Route component={NoMatch} />
               </Switch>
             </Row>
