@@ -114,12 +114,12 @@ class Token {
   }
 
   async issueToken({
-    signingKey,
     assetCode,
-    numOfTokens,
-    limit,
-    issuingAccountKey,
     distAccountKey,
+    issuingAccountKey,
+    limit,
+    numOfTokens,
+    signingKey,
   }) {
     //
     // Create new accounts for issuing and/or distribution if not provided
