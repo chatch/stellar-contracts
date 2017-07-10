@@ -69,7 +69,6 @@ const uiSchema = {
 class Token extends React.Component {
   handleOnSubmit = ({formData}) => {
     console.log(`FORM DATA: ${JSON.stringify(formData)}`)
-    console.log(`Server network: ${this.props.server.serverURL}`)
 
     const contracts = new Contracts(this.props.server)
     const tokenContract = contracts.token()

@@ -1,5 +1,5 @@
 /**
- * Tokens on stellar as described in the blog post: https://www.stellar.org/blog/tokens-on-stellar/
+ * Issue a token on stellar as described in the blog post: https://www.stellar.org/blog/tokens-on-stellar/
  */
 
 const createAccountOperation = (sdk, publicKey) => {
@@ -56,13 +56,12 @@ const createTokenAccounts = (
 const trustIssuingAccount = async (
   sdk,
   server,
-  issuingAccountKeypair,
   distAccountKeypair,
-  assetCode,
+  asset,
   numOfTokens
 ) => {
   const opts = {
-    asset: new sdk.Asset(assetCode, issuingAccountKeypair.publicKey()),
+    asset: asset,
     limit: String(numOfTokens), // trust for the full amount
   }
 
@@ -73,16 +72,39 @@ const trustIssuingAccount = async (
   const tx = txBuilder.build()
   tx.sign(distAccountKeypair)
 
-  return server
-    .submitTransaction(tx)
-    .then(res => {
-      console.log(`changeTrust res=${JSON.stringify(res)}`)
-      return res
-    })
-    .catch(err => {
-      console.error(JSON.stringify(err))
-      throw new Error(err)
-    })
+  return server.submitTransaction(tx).then(res => res).catch(err => {
+    console.error(JSON.stringify(err))
+    throw new Error(err)
+  })
+}
+
+const createTokens = async (
+  sdk,
+  server,
+  issuingAccountKeypair,
+  distAccount,
+  asset,
+  numOfTokens
+) => {
+  const opts = {
+    asset: asset,
+    destination: distAccount,
+    amount: String(numOfTokens), // trust for the full amount
+  }
+
+  const issuingAccount = await server.loadAccount(
+    issuingAccountKeypair.publicKey()
+  )
+  const txBuilder = new sdk.TransactionBuilder(issuingAccount)
+  txBuilder.addOperation(sdk.Operation.payment(opts))
+
+  const tx = txBuilder.build()
+  tx.sign(issuingAccountKeypair)
+
+  return server.submitTransaction(tx).then(res => res).catch(err => {
+    console.error(JSON.stringify(err))
+    throw new Error(err)
+  })
 }
 
 class Token {
@@ -99,7 +121,10 @@ class Token {
     issuingAccountKey,
     distAccountKey,
   }) {
+    //
     // Create new accounts for issuing and/or distribution if not provided
+    //
+
     if (!issuingAccountKey || !distAccountKey) {
       const signingKeypair = this.sdk.Keypair.fromSecret(signingKey)
       const signingAccount = await this.server.loadAccount(
@@ -122,26 +147,38 @@ class Token {
     console.log(`issuingAccountKeypair: ${issuingAccountKeypair.publicKey()}`)
     console.log(`distAccountKeypair: ${distAccountKeypair.publicKey()}`)
 
-    await trustIssuingAccount(
+    //
+    // Add trustline from distribution account to issuing account
+    //
+
+    const asset = new this.sdk.Asset(
+      assetCode,
+      issuingAccountKeypair.publicKey()
+    )
+    const trustIssuingResponse = await trustIssuingAccount(
+      this.sdk,
+      this.server,
+      distAccountKeypair,
+      asset,
+      numOfTokens
+    )
+    console.log(`trustIssuing res=${JSON.stringify(trustIssuingResponse)}`)
+
+    //
+    // Create tokens by sending them from issuer to distributer
+    //
+
+    const createTokensResponse = await createTokens(
       this.sdk,
       this.server,
       issuingAccountKeypair,
-      distAccountKeypair,
-      assetCode,
+      distAccountKeypair.publicKey(),
+      asset,
       numOfTokens
     )
+    console.log(`createTokens res=${JSON.stringify(createTokensResponse)}`)
 
-    let token
-
-    // this.server
-    //   .submitTransaction(tx)
-    //   .then(res => {
-    //     console.log(JSON.stringify(res))
-    //     token = res
-    //   })
-    //   .catch(err => {
-    //     console.error(JSON.stringify(err))
-    //   })
+    let token = {rsp: createTokensResponse}
 
     return token
   }
