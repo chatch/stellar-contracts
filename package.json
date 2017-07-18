@@ -6,16 +6,15 @@
     "type": "git",
     "url": "git+https://github.com/chatch/stellar-contracts-components.git"
   },
-  "keywords": [
-    "stellar",
-    "react"
-  ],
+  "keywords": ["stellar", "react"],
   "author": "Chris Hatch",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/chatch/stellar-contracts-components/issues"
   },
-  "homepage": ".",
+  "engines": {
+    "node": "6.x.x"
+  },
   "dependencies": {
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
@@ -35,6 +34,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer build/static/js/main.*"
   }
 }
