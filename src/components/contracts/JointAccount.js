@@ -36,8 +36,8 @@ const uiSchema = {
 }
 
 const formData = {
-  members: ['GCGA7YSUT4J3NYVZHH6TETXWABGQ46ORQ3NAASGKYMKROUX3Q5QPGX3P', ''],
-  signingKey: 'SCFAND6HGP7RVS6JLDSWINBOC6D3DYEEKY3FPTUUT5SEMTBQODK4FIR7',
+  members: ['', ''],
+  signingKey: '',
 }
 
 class JointAccount extends React.Component {

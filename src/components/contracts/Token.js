@@ -20,12 +20,10 @@ const schema = {
           type: 'string',
           title: 'Asset Code',
           maxLength: 12,
-          default: 'FOO',
         },
         numOfTokens: {
           type: 'integer',
           title: 'Number of Tokens',
-          default: 1000,
         },
       },
     },

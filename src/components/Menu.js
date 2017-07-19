@@ -10,8 +10,8 @@ const contracts = [
   },
   {
     path: '/jointaccount',
-    name: 'JointAccount',
-    description: 'Joint Accounts',
+    name: 'Joint Account',
+    description: 'Setup Joint Accounts',
   },
   {
     path: '/bond',
