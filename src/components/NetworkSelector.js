@@ -1,13 +1,14 @@
 import React from 'react'
+import {Button} from 'react-bootstrap'
 import {networks} from '../stellar'
 
 const NetworkButton = ({network, selectedNetwork, switcher}) =>
-  <button
-    className={network === selectedNetwork ? 'is-active' : 'is-inactive'}
+  <Button
+    bsStyle={network === selectedNetwork ? 'info' : 'default'}
     onClick={e => switcher(network)}
   >
     {network.toUpperCase()}
-  </button>
+  </Button>
 
 const NetworkSelector = props =>
   <div className="Network-Selector">

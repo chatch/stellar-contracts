@@ -2,11 +2,13 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {LinkContainer} from 'react-router-bootstrap'
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom'
-import {Grid, Row, Nav, Navbar, NavItem} from 'react-bootstrap'
+import {Grid, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
 
 import Menu from './components/Menu'
 import NetworkSelector from './components/NetworkSelector'
 import NoMatch from './components/NoMatch'
+import SignIn from './components/SignIn'
+
 import Token from './components/contracts/Token'
 import JointAccount from './components/contracts/JointAccount'
 
@@ -18,12 +20,14 @@ import './App.css'
 
 const storage = storageInit()
 const initialNetwork = storage.getItem('network') || 'test'
+const initialSigner = storage.getItem('signer') || null
 const reloadPage = () => window.location.reload(true)
 
 class App extends Component {
   state = {
     network: initialNetwork,
     server: networks[initialNetwork].initFunc(),
+    signer: initialSigner,
   }
 
   networkSwitcher = selectedNetwork => {
@@ -39,9 +43,19 @@ class App extends Component {
     )
   }
 
+  onSetSigner = key => {
+    this.setState({signer: key})
+    storage.setItem('signer', key)
+  }
+
+  onUnSetSigner = () => {
+    this.setState({signer: null})
+    storage.removeItem('signer')
+  }
+
   // @see HOCs.js withServer() to get this as props in any component
   getChildContext() {
-    return {server: this.state.server}
+    return {server: this.state.server, signer: this.state.signer}
   }
 
   render() {
@@ -70,6 +84,12 @@ class App extends Component {
                     switcher={this.networkSwitcher}
                   />
                 </Navbar.Form>
+                <Navbar.Form pullRight>
+                  <SignIn
+                    onSetSigner={this.onSetSigner}
+                    onUnSetSigner={this.onUnSetSigner}
+                  />
+                </Navbar.Form>
               </Navbar.Collapse>
             </Navbar>
           </div>
@@ -77,8 +97,8 @@ class App extends Component {
             <Row className="App-main">
               <Switch>
                 <Route exact path="/" component={Menu} />
-                <Route exact path="/token" component={Token} />
                 <Route exact path="/jointaccount" component={JointAccount} />
+                <Route exact path="/token" component={Token} />
                 <Route component={NoMatch} />
               </Switch>
             </Row>
@@ -91,6 +111,7 @@ class App extends Component {
 
 App.childContextTypes = {
   server: PropTypes.object,
+  signer: PropTypes.string,
 }
 
 export default App

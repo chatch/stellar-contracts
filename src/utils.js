@@ -14,5 +14,6 @@ const storageInit = () => {
 
 // @see App.js which puts this stellar server handle on the context
 const withServer = getContext({server: PropTypes.object})
+const withSigner = getContext({signer: PropTypes.string})
 
-export {storageInit, withServer}
+export {storageInit, withServer, withSigner}
