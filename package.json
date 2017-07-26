@@ -1,15 +1,15 @@
 {
-  "name": "stellar-contracts-components",
+  "name": "stellar-contracts",
   "version": "0.0.1",
-  "description": "React Components for working with Stellar 'Simple Contracts'",
+  "description": "Stellar 'Simple Contracts' catalog and examples",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chatch/stellar-contracts-components.git"
   },
   "keywords": [
     "react",
-    "smart contracts"
-    "stellar",
+    "smart contracts",
+    "stellar"
   ],
   "author": "Chris Hatch",
   "license": "Apache-2.0",
