@@ -83,7 +83,6 @@ class SignIn extends React.Component {
       this.props.server
         .loadAccount(secretToPublicKey(this.props.signer))
         .then(acc => {
-          console.log(acc.balances[0])
           this.setState({balanceXLM: acc.balances[0].balance})
         })
         .catch(err =>
