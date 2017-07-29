@@ -14,19 +14,19 @@ const contracts = [
     description: 'Create a simple Joint Account',
   },
   {
-    path: '/mofn',
-    name: 'M of N Signers',
+    path: '/mofn_todo',
+    name: 'M of N Signers [TODO]',
     description: 'Create accounts with M of N Signer schemes',
   },
   {
     path: '/bond',
-    name: 'Bonds',
-    description: 'Issue Bonds [TODO]',
+    name: 'Bonds [TODO]',
+    description: 'Issue Bonds',
   },
   {
     path: '/channel',
-    name: 'Channels',
-    description: 'Setup Payment Channels [TODO]',
+    name: 'Channels [TODO]',
+    description: 'Setup Payment Channels',
   },
 ]
 
