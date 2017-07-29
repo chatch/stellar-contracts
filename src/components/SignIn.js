@@ -35,7 +35,10 @@ const SignInButton = ({handleOpen}) =>
 const SignedInWithSignOutButton = ({balance, handleOnSignOut, publicKey}) =>
   <span>
     <span alt={publicKey} style={{marginRight: 30}}>
-      <a href={`https://steexp.com/account/${publicKey}`} target="_blank">
+      <a
+        href={`https://testnet.steexp.com/account/${publicKey}`}
+        target="_blank"
+      >
         {truncate(publicKey, {
           length: 10,
         })}
