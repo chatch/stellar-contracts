@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {LinkContainer} from 'react-router-bootstrap'
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom'
-import {Grid, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
+import {Col, Grid, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
 
 import Menu from './components/Menu'
 import NetworkSelector from './components/NetworkSelector'
@@ -11,6 +11,7 @@ import SignIn from './components/SignIn'
 
 import Token from './components/contracts/Token'
 import JointAccount from './components/contracts/JointAccount'
+import MofNSigners from './components/contracts/MofNSigners'
 
 import {networks} from './stellar'
 import {storageInit} from './utils'
@@ -98,9 +99,22 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={Menu} />
                 <Route exact path="/jointaccount" component={JointAccount} />
+                <Route exact path="/mofn" component={MofNSigners} />
                 <Route exact path="/token" component={Token} />
                 <Route component={NoMatch} />
               </Switch>
+            </Row>
+            <Row
+              style={{
+                borderTop: '1px solid #e5e5e5',
+                marginBottom: 20,
+                marginTop: 35,
+                paddingTop: 10,
+              }}
+            >
+              <Col mdOffset={11} md={1}>
+                <a href="https://github.com/chatch/stellar-contracts">Github</a>
+              </Col>
             </Row>
           </Grid>
         </div>

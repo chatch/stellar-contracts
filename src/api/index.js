@@ -2,6 +2,7 @@ import sdk from 'stellar-sdk'
 
 import Token from './token'
 import JointAccount from './joint_account'
+import MofNSigners from './m_of_n_signers'
 
 class Contracts {
   constructor(server) {
@@ -14,6 +15,10 @@ class Contracts {
 
   jointAccount() {
     return new JointAccount(sdk, this.server)
+  }
+
+  mOfNSigners() {
+    return new MofNSigners(sdk, this.server)
   }
 }
 

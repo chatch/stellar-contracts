@@ -56,17 +56,29 @@ const SignInModal = ({formValidate, handleOnSubmit, handleClose, showModal}) =>
       <Modal.Title>Sign In</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <Form
-        formData={formData}
-        onSubmit={handleOnSubmit}
-        schema={schema}
-        uiSchema={uiSchema}
-        validate={formValidate}
-      >
-        <Button bsStyle="info" type="submit">
-          Sign In
-        </Button>
-      </Form>
+      <div>
+        <Form
+          formData={formData}
+          onSubmit={handleOnSubmit}
+          schema={schema}
+          uiSchema={uiSchema}
+          validate={formValidate}
+        >
+          <Button bsStyle="info" type="submit">
+            Sign In
+          </Button>
+        </Form>
+      </div>
+      <div style={{marginTop: '1em'}}>
+        Hint:{' '}
+        <a
+          href="https://www.stellar.org/laboratory/#account-creator?network=test"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Create a new testnet account with funds here
+        </a>
+      </div>
     </Modal.Body>
     <Modal.Footer>
       <Button onClick={handleClose}>Close</Button>
@@ -87,7 +99,8 @@ class SignIn extends React.Component {
         })
         .catch(err =>
           console.error(
-            `Failed to loadAccount for signer: ${JSON.stringify(err)}`
+            `Failed to loadAccount for signer [${this.props
+              .signer}]: ${err.message}; stack: ${err.stack}`
           )
         )
   }

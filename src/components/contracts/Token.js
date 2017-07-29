@@ -1,14 +1,15 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
+import {Button, Col, Grid, Panel, Row} from 'react-bootstrap'
 import sdk from 'stellar-sdk'
 import _ from 'lodash'
 
-import Contracts from '../../contracts-api'
-import {withServer} from '../../utils'
+import Contracts from '../../api'
+import Receipt from '../Receipt'
+import {isSignedIn, withServer, withSigner} from '../../utils'
 
 const schema = {
   title: 'Token - Issue a New Token',
-  description: 'Issue a token on the Stellar Network',
   type: 'object',
   properties: {
     assetDetails: {
@@ -28,7 +29,7 @@ const schema = {
       },
     },
     accounts: {
-      title: 'Accounts',
+      title: 'Accounts (optional)',
       type: 'object',
       properties: {
         issuingAccountKey: {
@@ -39,33 +40,29 @@ const schema = {
           type: 'string',
           title: 'Distribution Account Signing Key',
         },
-        signingKey: {
-          type: 'string',
-          title: 'Account Creation Signing Key',
-        },
       },
     },
     limitFlag: {
-      title: 'Limit Supply',
+      title: 'Limit Supply (optional)',
       type: 'object',
       properties: {
         limit: {
           type: 'boolean',
-          title:
-            'Limit [If checked new tokens can NOT be issued after token creation]',
+          title: 'Limit [if checked the supply will be fixed forever]',
           default: false,
         },
       },
     },
+    signer: {type: 'string'},
   },
 }
 
 // add this to the description : .&nbsp;<a href='https://www.stellar.org/developers/guides/concepts/assets.html#anchors-issuing-assets'>See details on supported formats here.</a>",
 const uiSchema = {
-  asset: {
+  assetDetails: {
     assetCode: {
       'ui:description':
-        'Choose a code up to 12 character long using only alphanumeric characters. Currencies should map to an ISO 4127 code, stocks and bonds to an appropriate ISIN number',
+        "Codes are alphanumeric strings up to 12 characters in length. See 'Issuing Assets' link for full details.",
       'ui:placeholder': 'eg. BEAN',
     },
     numOfTokens: {
@@ -74,34 +71,83 @@ const uiSchema = {
   },
   accounts: {
     issuingAccountKey: {
-      'ui:description': 'Leave blank to have new account created ..',
+      'ui:help': 'Leave blank to have a new account created',
       'ui:placeholder': 'Issuing account signing key (Optional)',
     },
     distAccountKey: {
-      'ui:description': 'Leave blank to have new account created ..',
+      'ui:help': 'Leave blank to have a new account created',
       'ui:placeholder': 'Distribution account signing key (Optional)',
     },
-    signingKey: {
-      'ui:description':
-        'Secret key of an account that can create the above issuing and distribution accounts (if not provided)',
-      'ui:placeholder':
-        'Account creation signing key (Optional - if issuing and distribution accounts are provided)',
-    },
+  },
+  signer: {
+    'ui:widget': 'hidden',
   },
 }
 
+const HelpPanel = () =>
+  <Panel bsStyle="info" header="Help">
+    <div>Creates a new token on the Stellar Network.</div>
+    <div style={{marginTop: '1em'}}>
+      This contract mirrors the setup described in the 'Tokens on Stellar'
+      article (link below). Check it out for full details.
+    </div>
+    <div style={{marginTop: '1em'}}>
+      To create, simply enter an Asset Code and Number of Tokens to issue. An
+      issuing and distribution account will be created for you and the keys for
+      these will be included in the contract receipt.
+    </div>
+    <div style={{marginTop: '1em'}}>
+      However if you have account(s) setup already for these roles then enter
+      the signing keys for these so they can be configured for the token.
+    </div>
+    <div style={{marginTop: '1em'}}>
+      References:
+      <div style={{marginLeft: 10}}>
+        <div>
+          <a href="https://www.stellar.org/blog/tokens-on-stellar/">
+            Tokens on Stellar
+          </a>
+        </div>
+        <div>
+          <a href="https://www.stellar.org/developers/guides/issuing-assets.html">
+            Issuing Assets
+          </a>
+        </div>
+        <div>
+          <a href="https://www.stellar.org/developers/guides/concepts/multi-sig.html">
+            Multisig
+          </a>
+        </div>
+      </div>
+    </div>
+  </Panel>
+
 class Token extends React.Component {
+  formData = {}
+  state = {}
+
+  constructor(props) {
+    super(props)
+    this.formData.signer = props.signer ? props.signer : ''
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.signer !== nextProps.signer)
+      this.formData.signer = nextProps.signer
+  }
+
   formValidate(formData, errors) {
-    console.log(JSON.stringify(formData))
+    console.log(`Validate: ${JSON.stringify(formData)}`)
+
+    // check user is signed in as we need a tx signer
+    if (!isSignedIn(formData))
+      errors.signer.addError(
+        "You must be signed in to create this contract. Click 'Sign In' in the page header."
+      )
+
     const accs = formData.accounts
 
-    if (!accs.signingKey && (!accs.issuingAccountKey || !accs.distAccountKey)) {
-      errors.accounts.signingKey.addError(
-        'Signing key is mandatory if either the issuing or distribution keys are left blank'
-      )
-    }
-
-    const signKeyFields = ['signingKey', 'issuingAccountKey', 'distAccountKey']
+    const signKeyFields = ['issuingAccountKey', 'distAccountKey']
     signKeyFields.forEach(signKeyField => {
       if (
         !_.isEmpty(accs[signKeyField]) &&
@@ -117,31 +163,46 @@ class Token extends React.Component {
   }
 
   handleOnSubmit = ({formData}) => {
-    console.log(`FORM DATA: ${JSON.stringify(formData)}`)
-
     const tokenOpts = {
       ...formData.accounts,
       ...formData.assetDetails,
       ...formData.limitFlag,
+      signer: formData.signer,
     }
 
     const contracts = new Contracts(this.props.server)
     const tokenContract = contracts.token()
-    tokenContract.issueToken(tokenOpts).then(tokenDetails => {
-      console.log(JSON.stringify(tokenDetails))
+    tokenContract.create(tokenOpts).then(receipt => {
+      console.log(JSON.stringify(receipt))
+      this.setState({receipt: receipt})
     })
   }
 
   render() {
     return (
-      <Form
-        schema={schema}
-        onSubmit={this.handleOnSubmit}
-        uiSchema={uiSchema}
-        validate={this.formValidate}
-      />
+      <Grid>
+        <Row>
+          <Col md={8}>
+            <Form
+              formData={this.formData}
+              onSubmit={this.handleOnSubmit}
+              schema={schema}
+              uiSchema={uiSchema}
+              validate={this.formValidate}
+            >
+              <Button bsStyle="info" type="submit">
+                Create
+              </Button>
+            </Form>
+            {this.state.receipt && <Receipt receipt={this.state.receipt} />}
+          </Col>
+          <Col md={4} style={{marginTop: 20}}>
+            <HelpPanel />
+          </Col>
+        </Row>
+      </Grid>
     )
   }
 }
 
-export default withServer(Token)
+export default withServer(withSigner(Token))
