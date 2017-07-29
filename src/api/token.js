@@ -2,9 +2,7 @@
  * Issue a token on stellar as described in the blog post: https://www.stellar.org/blog/tokens-on-stellar/
  */
 
-const keypairReadable = keypair => {
-  return {publicKey: keypair.publicKey(), secret: keypair.secret()}
-}
+import {keypairReadable} from '../utils'
 
 const loadBalances = (server, publicKey) =>
   server.loadAccount(publicKey).then(acc => {

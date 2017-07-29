@@ -4,31 +4,44 @@ import {Button, Col, FormControl, Grid, Panel, Row} from 'react-bootstrap'
 import sdk from 'stellar-sdk'
 
 import Contracts from '../../api'
+import CreateButton from '../CreateButton'
 import Receipt from '../Receipt'
 import {isSignedIn, withServer, withSigner} from '../../utils'
 
-class AccountSelectorField extends React.Component {
+/**
+ * Stellar account field that adds:
+ *  - Generate button - to create a new account
+ *  - Use Signer button - to use account signed into the app
+ */
+class AccountField extends React.Component {
   constructor(props) {
     super(props)
+    console.log(
+      `AccountField: constructor: formData: ${JSON.stringify(props.formData)}`
+    )
     this.state = {...props.formData}
   }
 
   handleOnClickGenerate = () => {
     const newKeypair = sdk.Keypair.random()
-    this.setState({
-      publicKey: newKeypair.publicKey(),
-      secret: newKeypair.secret(),
-    })
+    console.log(`onChange: ${this.props.onChange}`)
+    this.setState(
+      {
+        secret: newKeypair.secret(),
+      },
+      () => this.props.onChange(this.state)
+    )
   }
 
   handleOnClickUseSigner = signer => {
-    const keypair = sdk.Keypair.fromSecret(signer)
-    this.setState({publicKey: keypair.publicKey(), secret: keypair.secret()})
+    this.setState({secret: signer}, () => this.props.onChange(this.state))
   }
 
   handleOnChange = e => {
-    console.log(`onChange: ${e.target.value}`)
-    this.setState({secret: e.target.value})
+    console.log(`AccountField: onChange: ${e.target.value}`)
+    this.setState({secret: e.target.value}, () =>
+      this.props.onChange(this.state)
+    )
   }
 
   render() {
@@ -36,10 +49,10 @@ class AccountSelectorField extends React.Component {
       <Row>
         <Col xs={8}>
           <FormControl
+            onChange={this.handleOnChange}
             placeholder={this.props.uiSchema['ui:placeholder']}
             type="text"
-            value={this.state.publicKey}
-            onChange={this.handleOnChange}
+            value={this.state.secret}
           />
         </Col>
         <Col xs={2}>
@@ -91,19 +104,13 @@ const HelpPanel = () =>
 
 const schema = {
   title: 'Joint Account',
+  description:
+    "1) Enter Secret Key of an existing account  OR  2) 'Generate' new account  OR  3) 'Use Signer'",
   type: 'object',
   properties: {
     account: {
       title: 'Account',
       type: 'object',
-      properties: {
-        publicKey: {
-          type: 'string',
-        },
-        secret: {
-          type: 'string',
-        },
-      },
     },
     members: {
       title: 'Members',
@@ -119,14 +126,7 @@ const schema = {
 
 const uiSchema = {
   account: {
-    'ui:field': 'accountSelector',
-    publicKey: {
-      'ui:placeholder':
-        "1) Enter Secret Key of an existing account  OR  2) 'Generate' new account  OR  3) 'Use Signer'",
-    },
-    secret: {
-      'ui:widget': 'hidden',
-    },
+    'ui:field': 'account',
   },
   members: {
     'ui:options': {
@@ -141,15 +141,16 @@ const uiSchema = {
 }
 
 const fields = {
-  accountSelector: AccountSelectorField,
+  account: AccountField,
 }
 
 class JointAccount extends React.Component {
   formData = {
-    account: {publicKey: '', signer: ''},
+    account: '',
     members: [''],
   }
-  state = {}
+
+  state = {isLoading: false}
 
   constructor(props) {
     super(props)
@@ -189,12 +190,25 @@ class JointAccount extends React.Component {
   }
 
   handleOnSubmit = ({formData}) => {
+    this.setState({error: null, isLoading: true})
     const contracts = new Contracts(this.props.server)
     const contract = contracts.jointAccount()
-    contract.create(formData).then(receipt => {
-      console.log(JSON.stringify(receipt))
-      this.setState({receipt: receipt})
-    })
+    contract
+      .create({
+        accountSecret: formData.account.secret,
+        members: formData.members,
+        signer: this.props.signer,
+      })
+      .then(receipt => {
+        console.log(JSON.stringify(receipt))
+        this.setState({isLoading: false, receipt: receipt})
+      })
+      .catch(err => {
+        this.setState({
+          isLoading: false,
+          error: err.detail ? err.detail : err.message,
+        })
+      })
   }
 
   render() {
@@ -211,9 +225,14 @@ class JointAccount extends React.Component {
               uiSchema={uiSchema}
               validate={this.formValidate}
             >
-              <Button bsStyle="info" type="submit">
-                Create
-              </Button>
+              <CreateButton
+                errorMsg={
+                  this.state.error && typeof this.state.error === 'string'
+                    ? this.state.error
+                    : ''
+                }
+                isLoading={this.state.isLoading}
+              />
             </Form>
             {this.state.receipt && <Receipt receipt={this.state.receipt} />}
           </Col>

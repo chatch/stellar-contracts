@@ -2,6 +2,10 @@ import PropTypes from 'prop-types'
 import {getContext} from 'recompose'
 import sdk from 'stellar-sdk'
 
+const keypairReadable = keypair => {
+  return {publicKey: keypair.publicKey(), secret: keypair.secret()}
+}
+
 const isSignedIn = ({signer}) =>
   signer && sdk.StrKey.isValidEd25519SecretSeed(signer)
 
@@ -9,7 +13,7 @@ const storageInit = () => {
   let storage
   if (typeof localStorage === 'undefined' || localStorage === null) {
     const LocalStorage = require('node-localstorage').LocalStorage
-    storage = new LocalStorage('./stellarexplorer')
+    storage = new LocalStorage('./stellarcontracts')
   } else {
     storage = localStorage
   }
@@ -20,4 +24,4 @@ const storageInit = () => {
 const withServer = getContext({server: PropTypes.object})
 const withSigner = getContext({signer: PropTypes.string})
 
-export {isSignedIn, storageInit, withServer, withSigner}
+export {keypairReadable, isSignedIn, storageInit, withServer, withSigner}
