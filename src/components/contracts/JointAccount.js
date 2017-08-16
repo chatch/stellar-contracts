@@ -132,7 +132,7 @@ class JointAccount extends React.Component {
       .create({
         accountSecret: formData.account.secret,
         members: formData.members,
-        signer: this.props.signer,
+        signerSecret: this.props.signer,
       })
       .then(receipt => {
         console.log(JSON.stringify(receipt))

@@ -6,7 +6,24 @@ const keypairReadable = keypair => {
   return {publicKey: keypair.publicKey(), secret: keypair.secret()}
 }
 
-const isSignedIn = ({signer}) => signer && sdk.StrKey.isValidEd25519SecretSeed(signer)
+const isSignedIn = ({signer}) =>
+  signer && sdk.StrKey.isValidEd25519SecretSeed(signer)
+
+const accountExists = async (publicKey, server) => {
+  let exists
+  try {
+    await server.loadAccount(publicKey)
+    exists = true
+  } catch (e) {
+    if (e instanceof sdk.NotFoundError) {
+      exists = false
+    } else {
+      console.error(e)
+      throw new Error(e.msg)
+    }
+  }
+  return exists
+}
 
 const storageInit = () => {
   let storage
@@ -22,8 +39,18 @@ const storageInit = () => {
   return storage
 }
 
+const stampMemo = () => sdk.Memo.text('Created using: git.io/v7b6s')
+
 // @see App.js which puts this stellar server handle on the context
 const withServer = getContext({server: PropTypes.object})
 const withSigner = getContext({signer: PropTypes.string})
 
-export {keypairReadable, isSignedIn, storageInit, withServer, withSigner}
+export {
+  accountExists,
+  keypairReadable,
+  isSignedIn,
+  stampMemo,
+  storageInit,
+  withServer,
+  withSigner,
+}
