@@ -1,5 +1,6 @@
 import React from 'react'
 import {Button, Col, FormControl, Row} from 'react-bootstrap'
+import PropTypes from 'prop-types'
 import sdk from 'stellar-sdk'
 
 /**
@@ -10,15 +11,14 @@ import sdk from 'stellar-sdk'
 class AccountField extends React.Component {
   constructor(props) {
     super(props)
-    console.log(
-      `AccountField: constructor: formData: ${JSON.stringify(props.formData)}`
-    )
+    // console.log(
+    //   `AccountField: constructor: formData: ${JSON.stringify(props.formData)}`
+    // )
     this.state = {...props.formData}
   }
 
   handleOnClickGenerate = () => {
     const newKeypair = sdk.Keypair.random()
-    console.log(`onChange: ${this.props.onChange}`)
     this.setState(
       {
         secret: newKeypair.secret(),
@@ -50,12 +50,17 @@ class AccountField extends React.Component {
           />
         </Col>
         <Col xs={2}>
-          <Button bsStyle="success" onClick={this.handleOnClickGenerate}>
+          <Button
+            id="btn-generate"
+            bsStyle="success"
+            onClick={this.handleOnClickGenerate}
+          >
             Generate
           </Button>
         </Col>
         <Col xs={2}>
           <Button
+            id="btn-use-signer"
             bsStyle="success"
             onClick={() =>
               this.handleOnClickUseSigner(this.props.formContext.signer)}
@@ -66,6 +71,17 @@ class AccountField extends React.Component {
       </Row>
     )
   }
+}
+
+AccountField.propTypes = {
+  formContext: PropTypes.shape({
+    signer: PropTypes.string,
+  }).isRequired,
+  formData: PropTypes.object.isRequired,
+  onChange: PropTypes.func,
+  uiSchema: PropTypes.shape({
+    'ui:placeholder': PropTypes.string,
+  }).isRequired,
 }
 
 export default AccountField

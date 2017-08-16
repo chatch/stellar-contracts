@@ -6,14 +6,16 @@ const keypairReadable = keypair => {
   return {publicKey: keypair.publicKey(), secret: keypair.secret()}
 }
 
-const isSignedIn = ({signer}) =>
-  signer && sdk.StrKey.isValidEd25519SecretSeed(signer)
+const isSignedIn = ({signer}) => signer && sdk.StrKey.isValidEd25519SecretSeed(signer)
 
 const storageInit = () => {
   let storage
   if (typeof localStorage === 'undefined' || localStorage === null) {
+    const tmpdir = require('os').tmpdir
+    const join = require('path').join
+    const storagePath = join(tmpdir(), 'steexp')
     const LocalStorage = require('node-localstorage').LocalStorage
-    storage = new LocalStorage('./stellarcontracts')
+    storage = new LocalStorage(storagePath)
   } else {
     storage = localStorage
   }

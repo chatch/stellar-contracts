@@ -32,13 +32,17 @@ const SignInButton = ({handleOpen}) =>
     Sign In
   </Button>
 
-const SignedInWithSignOutButton = ({balance, handleOnSignOut, publicKey}) =>
+// change account address to window.location.hostname or something context aware
+//    testit out...
+const SignedInWithSignOutButton = ({
+  accountUrl,
+  balance,
+  handleOnSignOut,
+  publicKey,
+}) =>
   <span>
     <span alt={publicKey} style={{marginRight: 30}}>
-      <a
-        href={`https://testnet.steexp.com/account/${publicKey}`}
-        target="_blank"
-      >
+      <a href={accountUrl} target="_blank">
         {truncate(publicKey, {
           length: 10,
         })}
@@ -90,6 +94,12 @@ const SignInModal = ({formValidate, handleOnSubmit, handleClose, showModal}) =>
 
 const secretToPublicKey = secret => Keypair.fromSecret(secret).publicKey()
 
+const accountPath = (serverURL, account) => {
+  const isTestnet = serverURL.indexOf('testnet') !== -1
+  const domain = `${isTestnet ? 'testnet.' : ''}steexp.com`
+  return `https://${domain}/account/${account}`
+}
+
 class SignIn extends React.Component {
   state = {showModal: false}
 
@@ -100,12 +110,15 @@ class SignIn extends React.Component {
         .then(acc => {
           this.setState({balanceXLM: acc.balances[0].balance})
         })
-        .catch(err =>
+        .catch(err => {
           console.error(
             `Failed to loadAccount for signer [${this.props
               .signer}]: ${err.message}; stack: ${err.stack}`
           )
-        )
+          alert(
+            'Failed to load your signing account. Check it exists on this network.'
+          )
+        })
   }
 
   formValidate = (formData, errors) => {
@@ -145,6 +158,10 @@ class SignIn extends React.Component {
         {!publicKey && <SignInButton handleOpen={this.handleOpen} />}
         {publicKey &&
           <SignedInWithSignOutButton
+            accountUrl={accountPath(
+              this.props.server.serverURL.toString(),
+              publicKey
+            )}
             balance={this.state.balanceXLM}
             handleOnSignOut={this.handleOnSignOut}
             publicKey={publicKey}

@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders placeholder 1`] = `
+Array [
+  <Row
+    bsClass="row"
+    componentClass="div"
+>
+    <Col
+        bsClass="col"
+        componentClass="div"
+        xs={8}
+    >
+        <FormControl
+            bsClass="form-control"
+            componentClass="input"
+            onChange={[Function]}
+            placeholder="Enter a Stellar Secret Key"
+            type="text"
+            value={undefined}
+        />
+    </Col>
+    <Col
+        bsClass="col"
+        componentClass="div"
+        xs={2}
+    >
+        <Button
+            active={false}
+            block={false}
+            bsClass="btn"
+            bsStyle="success"
+            disabled={false}
+            id="btn-generate"
+            onClick={[Function]}
+        >
+            Generate
+        </Button>
+    </Col>
+    <Col
+        bsClass="col"
+        componentClass="div"
+        xs={2}
+    >
+        <Button
+            active={false}
+            block={false}
+            bsClass="btn"
+            bsStyle="success"
+            disabled={false}
+            id="btn-use-signer"
+            onClick={[Function]}
+        >
+            Use Signer
+        </Button>
+    </Col>
+</Row>,
+]
+`;
+
+exports[`renders with minimal fields 1`] = `
+Array [
+  <Row
+    bsClass="row"
+    componentClass="div"
+>
+    <Col
+        bsClass="col"
+        componentClass="div"
+        xs={8}
+    >
+        <FormControl
+            bsClass="form-control"
+            componentClass="input"
+            onChange={[Function]}
+            placeholder={undefined}
+            type="text"
+            value={undefined}
+        />
+    </Col>
+    <Col
+        bsClass="col"
+        componentClass="div"
+        xs={2}
+    >
+        <Button
+            active={false}
+            block={false}
+            bsClass="btn"
+            bsStyle="success"
+            disabled={false}
+            id="btn-generate"
+            onClick={[Function]}
+        >
+            Generate
+        </Button>
+    </Col>
+    <Col
+        bsClass="col"
+        componentClass="div"
+        xs={2}
+    >
+        <Button
+            active={false}
+            block={false}
+            bsClass="btn"
+            bsStyle="success"
+            disabled={false}
+            id="btn-use-signer"
+            onClick={[Function]}
+        >
+            Use Signer
+        </Button>
+    </Col>
+</Row>,
+]
+`;
