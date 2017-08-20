@@ -19,6 +19,11 @@ const contracts = [
     description: 'Simple joint account with equal weights for all members',
   },
   {
+    path: '/rosca/rotated-savings',
+    name: 'ROSCA (rotated savings)',
+    description: 'Setup a "Rotated Savings" / "Merry-Go-Round style ROSCA',
+  },
+  {
     path: '/m-of-n-todo',
     name: 'M of N Signers [TODO]',
     description: 'Create accounts with M of N Signer schemes',

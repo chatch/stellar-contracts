@@ -9,10 +9,11 @@ import NetworkSelector from './components/NetworkSelector'
 import NoMatch from './components/NoMatch'
 import SignIn from './components/SignIn'
 
-import Token from './components/contracts/Token'
-import JointAccountEqual from './components/contracts/JointAccountEqual'
 import JointAccountCustom from './components/contracts/JointAccountCustom'
+import JointAccountEqual from './components/contracts/JointAccountEqual'
 import MofNSigners from './components/contracts/MofNSigners'
+import ROSCARotatedSavings from './components/contracts/ROSCARotatedSavings'
+import Token from './components/contracts/Token'
 
 import {networks} from './stellar'
 import {storageInit} from './utils'
@@ -111,6 +112,11 @@ class App extends Component {
                 />
                 <Route exact path="/m-of-n" component={MofNSigners} />
                 <Route exact path="/token" component={Token} />
+                <Route
+                  exact
+                  path="/rosca/rotated-savings"
+                  component={ROSCARotatedSavings}
+                />
                 <Route component={NoMatch} />
               </Switch>
             </Row>

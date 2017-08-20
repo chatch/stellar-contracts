@@ -46,7 +46,7 @@ class JointAccount {
         signers: jointAccountDetails.signers,
         thresholds: jointAccountDetails.thresholds,
       },
-      transactions: {createJointAccount: txResponse},
+      transactions: {create: txResponse},
       inputs: props,
     })
   }

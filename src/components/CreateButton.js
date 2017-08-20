@@ -10,15 +10,15 @@ import Spinner from './Spinner'
  */
 const CreateButton = ({errorMsg, isLoading}) =>
   <span>
-    <Button bsStyle="info" type="submit">
-      Create
+    <Button bsStyle="primary" type="submit">
+      Create Contract
     </Button>
     <span style={{marginLeft: 20}}>
       {isLoading === true && <Spinner />}
       {errorMsg &&
         errorMsg != null &&
-        <span style={{color: 'red'}}>
-          {errorMsg}
+        <span style={{color: '#A94442'}}>
+          Creation failed: {errorMsg}
         </span>}
     </span>
   </span>
