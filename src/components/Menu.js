@@ -9,12 +9,17 @@ const contracts = [
     description: 'Issue a New Token on Stellar',
   },
   {
-    path: '/jointaccount',
-    name: 'Joint Account',
-    description: 'Create a simple Joint Account',
+    path: '/joint-account/custom',
+    name: 'Joint Account (Customize)',
+    description: 'Create a joint account setting custom weights and thresholds',
   },
   {
-    path: '/mofn_todo',
+    path: '/joint-account/equal',
+    name: 'Joint Account (Preset: Equal Weights)',
+    description: 'Simple joint account with equal weights for all members',
+  },
+  {
+    path: '/m-of-n-todo',
     name: 'M of N Signers [TODO]',
     description: 'Create accounts with M of N Signer schemes',
   },
@@ -62,12 +67,12 @@ class Menu extends React.Component {
             </Row>
             {contracts.map(c =>
               <Row key={c.name} style={{marginTop: 10}}>
-                <Col md={3}>
+                <Col md={4}>
                   <Link to={c.path}>
                     {c.name}
                   </Link>
                 </Col>
-                <Col md={9}>
+                <Col md={8}>
                   {c.description}
                 </Col>
               </Row>

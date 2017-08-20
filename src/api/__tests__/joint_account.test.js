@@ -1,5 +1,6 @@
 import sdk from 'stellar-sdk'
 import JointAccount from '../joint_account'
+import {memberList, signerObj, thresholdsObj} from '../../utils'
 
 const SIGNER = sdk.Keypair.fromSecret(
   'SAP4WQ7W3JS72NGGTJ3X7FM3VGMVI5AIWS5VUOXK4MJECLTOPDUE7VMK'
@@ -16,11 +17,16 @@ const MEMBER2 = sdk.Keypair.fromPublicKey(
 const MEMBER3 = sdk.Keypair.fromPublicKey(
   'GAGXSBXBSJUYCYM623OQQK5P3PXT2BOCKRXU7TVAEOZB5CET2ABJX2T6'
 )
-const MEMBERS = [MEMBER1.publicKey(), MEMBER2.publicKey(), MEMBER3.publicKey()]
 
-const signerObj = (key, weight) => {
-  return {weight: weight, type: 'ed25519_public_key', key: key, public_key: key}
-}
+const MEMBERS_EQUAL_WEIGHTS = memberList([
+  MEMBER1.publicKey(),
+  MEMBER2.publicKey(),
+  MEMBER3.publicKey(),
+])
+const MEMBERS_WITH_WEIGHTS = memberList(
+  [MEMBER1.publicKey(), MEMBER2.publicKey(), MEMBER3.publicKey()],
+  [2, 1, 1]
+)
 
 const mockServer = {
   loadAccount: jest.fn(account => {
@@ -33,27 +39,27 @@ const mockServer = {
         signerObj(MEMBER2.publicKey(), 1),
         signerObj(MEMBER3.publicKey(), 1),
       ]
-      acc.thresholds = {
-        low_threshold: 0,
-        med_threshold: 0,
-        high_threshold: MEMBERS.length,
-      }
+      acc.thresholds = thresholdsObj(0, 0, MEMBERS_EQUAL_WEIGHTS)
       return Promise.resolve(acc)
     }
   }),
   submitTransaction: jest.fn(() => Promise.resolve({fake: 'receipt'})),
 }
 
-// not using any network but the sdk needs the =to be set to something
+// not using any network but the sdk needs this to be set to something
 sdk.Network.useTestNetwork()
 
 const jointAccount = new JointAccount(sdk, mockServer)
 
-it('joint account creates ok', async () => {
+it('joint account simple equal weights creates ok', async () => {
   const inputs = {
     accountSecret: JOINT_NEW.secret(),
-    members: MEMBERS,
+    members: MEMBERS_EQUAL_WEIGHTS,
     signerSecret: SIGNER.secret(),
+    thresholds: Object.assign(
+      {masterWeight: 1},
+      thresholdsObj(0, 0, MEMBERS_EQUAL_WEIGHTS.length)
+    ),
   }
   const receipt = await jointAccount.create(inputs)
   expect(receipt).toMatchSnapshot()

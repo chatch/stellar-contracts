@@ -1,41 +1,14 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import {Col, Grid, Panel, Row} from 'react-bootstrap'
+import {Col, Grid, Row} from 'react-bootstrap'
 import sdk from 'stellar-sdk'
 
 import Contracts from '../../api'
-import AccountField from '../AccountField'
+import AccountWithHelpersField from '../fields/AccountWithHelpersField'
+import SignerWithWeightField from '../fields/SignerWithWeightField'
 import CreateButton from '../CreateButton'
 import Receipt from '../Receipt'
 import {isSignedIn, withServer, withSigner} from '../../utils'
-
-const HelpPanel = () =>
-  <Panel bsStyle="info" header="Help">
-    <div>Creates a simple joint account on the Stellar Network.</div>
-    <div style={{marginTop: '1em'}}>
-      This setup allows any member account to make payments (and other medium
-      threshold operations).
-    </div>
-    <div style={{marginTop: '1em'}}>
-      However high threshold operations like changing the list of signers
-      requires all parties to sign.
-    </div>
-    <div style={{marginTop: '1em'}}>
-      References:
-      <div style={{marginLeft: 10}}>
-        <div>
-          <a href="https://www.stellar.org/developers/guides/concepts/multi-sig.html#example-2-joint-accounts">
-            Joint Accounts
-          </a>
-        </div>
-        <div>
-          <a href="https://www.stellar.org/developers/guides/concepts/multi-sig.html">
-            Multisig
-          </a>
-        </div>
-      </div>
-    </div>
-  </Panel>
 
 const schema = {
   title: 'Joint Account',
@@ -43,7 +16,7 @@ const schema = {
     "1) Enter Secret Key of an existing account  OR  2) 'Generate' new account  OR  3) 'Use Signer'",
   type: 'object',
   properties: {
-    account: {
+    jointAccount: {
       title: 'Account',
       type: 'object',
     },
@@ -51,17 +24,52 @@ const schema = {
       title: 'Members',
       type: 'array',
       items: {
-        type: 'string',
-        default: '',
+        type: 'object',
+        properties: {
+          publicKey: {
+            type: 'string',
+            default: '',
+          },
+          weight: {
+            type: 'integer',
+            default: 1,
+          },
+        },
+      },
+    },
+    thresholds: {
+      title: 'Thresholds',
+      type: 'object',
+      properties: {
+        high: {
+          title: 'High',
+          type: 'integer',
+          default: 0,
+        },
+        med: {
+          title: 'Medium',
+          type: 'integer',
+          default: 0,
+        },
+        low: {
+          title: 'Low',
+          type: 'integer',
+          default: 0,
+        },
+        masterWeight: {
+          title: 'Master Weight',
+          type: 'integer',
+          default: 0,
+        },
       },
     },
     signer: {type: 'string'},
   },
 }
-
 const uiSchema = {
-  account: {
+  jointAccount: {
     'ui:field': 'account',
+    'ui:placeholder': 'Secret key of joint account ',
   },
   members: {
     'ui:options': {
@@ -69,6 +77,15 @@ const uiSchema = {
     },
     'ui:help':
       "Enter stellar public keys for all accounts to add as signers. Click the '+' button to add more.",
+    items: {
+      'ui:field': 'memberAccount',
+      publicKey: {
+        'ui:placeholder': 'Public key of member account',
+      },
+    },
+  },
+  thresholds: {
+    'ui:help': 'Apply joint account thresholds ...',
   },
   signer: {
     'ui:widget': 'hidden',
@@ -76,19 +93,16 @@ const uiSchema = {
 }
 
 const fields = {
-  account: AccountField,
+  account: AccountWithHelpersField,
+  memberAccount: SignerWithWeightField,
 }
 
-class JointAccount extends React.Component {
-  formData = {
-    account: '',
-    members: [''],
-  }
-
+class JointAccountCustom extends React.Component {
   state = {isLoading: false}
 
   constructor(props) {
     super(props)
+    this.formData = this.props.formData
     this.formData.signer = props.signer ? props.signer : ''
   }
 
@@ -172,7 +186,7 @@ class JointAccount extends React.Component {
             {this.state.receipt && <Receipt receipt={this.state.receipt} />}
           </Col>
           <Col md={4} style={{marginTop: 20}}>
-            <HelpPanel />
+            {<this.props.HelpPanel />}
           </Col>
         </Row>
       </Grid>
@@ -180,4 +194,4 @@ class JointAccount extends React.Component {
   }
 }
 
-export default withServer(withSigner(JointAccount))
+export default withServer(withSigner(JointAccountCustom))

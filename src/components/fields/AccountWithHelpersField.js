@@ -8,12 +8,9 @@ import sdk from 'stellar-sdk'
  *  - Generate button - to create a new account
  *  - Use Signer button - to use account signed into the app
  */
-class AccountField extends React.Component {
+class AccountWithHelpersField extends React.Component {
   constructor(props) {
     super(props)
-    // console.log(
-    //   `AccountField: constructor: formData: ${JSON.stringify(props.formData)}`
-    // )
     this.state = {...props.formData}
   }
 
@@ -21,19 +18,19 @@ class AccountField extends React.Component {
     const newKeypair = sdk.Keypair.random()
     this.setState(
       {
-        secret: newKeypair.secret(),
+        secretKey: newKeypair.secret(),
       },
       () => this.props.onChange(this.state)
     )
   }
 
   handleOnClickUseSigner = signer => {
-    this.setState({secret: signer}, () => this.props.onChange(this.state))
+    this.setState({secretKey: signer}, () => this.props.onChange(this.state))
   }
 
   handleOnChange = e => {
-    console.log(`AccountField: onChange: ${e.target.value}`)
-    this.setState({secret: e.target.value}, () =>
+    console.log(`AccountWithHelpersField: onChange: ${e.target.value}`)
+    this.setState({secretKey: e.target.value}, () =>
       this.props.onChange(this.state)
     )
   }
@@ -46,7 +43,7 @@ class AccountField extends React.Component {
             onChange={this.handleOnChange}
             placeholder={this.props.uiSchema['ui:placeholder']}
             type="text"
-            value={this.state.secret}
+            value={this.state.secretKey}
           />
         </Col>
         <Col xs={2}>
@@ -73,15 +70,12 @@ class AccountField extends React.Component {
   }
 }
 
-AccountField.propTypes = {
+AccountWithHelpersField.propTypes = {
   formContext: PropTypes.shape({
     signer: PropTypes.string,
   }).isRequired,
-  formData: PropTypes.object.isRequired,
-  onChange: PropTypes.func,
-  uiSchema: PropTypes.shape({
-    'ui:placeholder': PropTypes.string,
-  }).isRequired,
+  formData: PropTypes.object,
+  onChange: PropTypes.func.isRequired,
 }
 
-export default AccountField
+export default AccountWithHelpersField

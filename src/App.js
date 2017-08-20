@@ -10,7 +10,8 @@ import NoMatch from './components/NoMatch'
 import SignIn from './components/SignIn'
 
 import Token from './components/contracts/Token'
-import JointAccount from './components/contracts/JointAccount'
+import JointAccountEqual from './components/contracts/JointAccountEqual'
+import JointAccountCustom from './components/contracts/JointAccountCustom'
 import MofNSigners from './components/contracts/MofNSigners'
 
 import {networks} from './stellar'
@@ -98,8 +99,17 @@ class App extends Component {
             <Row className="App-main">
               <Switch>
                 <Route exact path="/" component={Menu} />
-                <Route exact path="/jointaccount" component={JointAccount} />
-                <Route exact path="/mofn" component={MofNSigners} />
+                <Route
+                  exact
+                  path="/joint-account/equal"
+                  component={JointAccountEqual}
+                />
+                <Route
+                  exact
+                  path="/joint-account/custom"
+                  component={JointAccountCustom}
+                />
+                <Route exact path="/m-of-n" component={MofNSigners} />
                 <Route exact path="/token" component={Token} />
                 <Route component={NoMatch} />
               </Switch>

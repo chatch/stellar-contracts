@@ -16,15 +16,17 @@ class JointAccount {
 
   async create(props) {
     //console.log(`create() props: ${JSON.stringify(props)}`)
-    const {accountSecret, members, signerSecret} = props
+    const {accountSecret, members, signerSecret, thresholds} = props
 
     const accountKeypair = this.sdk.Keypair.fromSecret(accountSecret)
 
     const tx = await this.buildTransaction(
       accountKeypair,
       members,
-      signerSecret
+      signerSecret,
+      thresholds
     )
+
     const txResponse = await this.server
       .submitTransaction(tx)
       .then(res => res)
@@ -49,7 +51,7 @@ class JointAccount {
     })
   }
 
-  async buildTransaction(accountKeypair, members, signerSecret) {
+  async buildTransaction(accountKeypair, members, signerSecret, thresholds) {
     const Operation = this.sdk.Operation
     const signerKeypair = this.sdk.Keypair.fromSecret(signerSecret)
     const signerAccount = await this.server.loadAccount(
@@ -70,25 +72,22 @@ class JointAccount {
     }
 
     // Add signerSecret operations
-    members.forEach(acc => {
-      if (acc !== signerAccount.accountId())
+    members.forEach(({account, weight}) => {
+      if (account !== signerAccount.accountId()) {
         txBuilder.addOperation(
           Operation.setOptions({
-            signer: {ed25519PublicKey: acc, weight: 1},
+            signer: {ed25519PublicKey: account, weight: weight},
             source: accountKeypair.publicKey(),
           })
         )
+      }
     })
 
     // Set Thresholds
     txBuilder.addOperation(
-      Operation.setOptions({
-        masterWeight: 1,
-        lowThreshold: 0,
-        medThreshold: 0,
-        highThreshold: members.length + 1,
-        source: accountKeypair.publicKey(),
-      })
+      Operation.setOptions(
+        Object.assign({source: accountKeypair.publicKey()}, thresholds)
+      )
     )
 
     // Add stamp

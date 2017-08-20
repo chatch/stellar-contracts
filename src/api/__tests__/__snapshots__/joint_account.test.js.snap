@@ -1,15 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`joint account creates ok 1`] = `
+exports[`joint account simple equal weights creates ok 1`] = `
 Object {
   "inputs": Object {
     "accountSecret": "SABRXC3RQJVVUS22N7H6WGZPTWJ7GBKIZ3PBGX4NWKZZSLC4DWIUP4K3",
     "members": Array [
-      "GAJ3VIHUHOHPI7HIJ3DS5HJ5K7CMJ5QVVCO4IXBIG32HGM3WAS3OEOMA",
-      "GBN4BQAIFUEKYOEYAI4ZEWUK7UW4QVCFVT4VD643L5O7IBCZEES3R6D3",
-      "GAGXSBXBSJUYCYM623OQQK5P3PXT2BOCKRXU7TVAEOZB5CET2ABJX2T6",
+      Object {
+        "account": "GAJ3VIHUHOHPI7HIJ3DS5HJ5K7CMJ5QVVCO4IXBIG32HGM3WAS3OEOMA",
+        "weight": 1,
+      },
+      Object {
+        "account": "GBN4BQAIFUEKYOEYAI4ZEWUK7UW4QVCFVT4VD643L5O7IBCZEES3R6D3",
+        "weight": 1,
+      },
+      Object {
+        "account": "GAGXSBXBSJUYCYM623OQQK5P3PXT2BOCKRXU7TVAEOZB5CET2ABJX2T6",
+        "weight": 1,
+      },
     ],
     "signerSecret": "SAP4WQ7W3JS72NGGTJ3X7FM3VGMVI5AIWS5VUOXK4MJECLTOPDUE7VMK",
+    "thresholds": Object {
+      "high_threshold": 3,
+      "low_threshold": 0,
+      "masterWeight": 1,
+      "med_threshold": 0,
+    },
   },
   "jointAccount": Object {
     "keys": Object {
@@ -37,7 +52,20 @@ Object {
       },
     ],
     "thresholds": Object {
-      "high_threshold": 3,
+      "high_threshold": Array [
+        Object {
+          "account": "GAJ3VIHUHOHPI7HIJ3DS5HJ5K7CMJ5QVVCO4IXBIG32HGM3WAS3OEOMA",
+          "weight": 1,
+        },
+        Object {
+          "account": "GBN4BQAIFUEKYOEYAI4ZEWUK7UW4QVCFVT4VD643L5O7IBCZEES3R6D3",
+          "weight": 1,
+        },
+        Object {
+          "account": "GAGXSBXBSJUYCYM623OQQK5P3PXT2BOCKRXU7TVAEOZB5CET2ABJX2T6",
+          "weight": 1,
+        },
+      ],
       "low_threshold": 0,
       "med_threshold": 0,
     },

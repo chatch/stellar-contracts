@@ -41,6 +41,24 @@ const storageInit = () => {
 
 const stampMemo = () => sdk.Memo.text('Created using: git.io/v7b6s')
 
+const memberList = (accArr, weightsArr) =>
+  accArr.map((acc, idx) => {
+    const haveWeights = weightsArr && weightsArr.length === accArr.length
+    return {account: acc, weight: haveWeights ? weightsArr[idx] : 1}
+  })
+
+const signerObj = (key, weight) => {
+  return {weight: weight, type: 'ed25519_public_key', key: key, public_key: key}
+}
+
+const thresholdsObj = (low, med, high) => {
+  return {
+    low_threshold: low,
+    med_threshold: med,
+    high_threshold: high,
+  }
+}
+
 // @see App.js which puts this stellar server handle on the context
 const withServer = getContext({server: PropTypes.object})
 const withSigner = getContext({signer: PropTypes.string})
@@ -49,8 +67,11 @@ export {
   accountExists,
   keypairReadable,
   isSignedIn,
+  memberList,
+  signerObj,
   stampMemo,
   storageInit,
+  thresholdsObj,
   withServer,
   withSigner,
 }
