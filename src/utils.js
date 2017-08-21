@@ -47,6 +47,26 @@ const memberList = (accArr, weightsArr) =>
     return {account: acc, weight: haveWeights ? weightsArr[idx] : 1}
   })
 
+/**
+ * See here for how to calculate the minimum account balance:
+ * https://www.stellar.org/developers/guides/concepts/fees.html#minimum-account-balance
+ *
+ * Entries include Trustlines, Offers, Signers, Data entries
+ *
+ * See fetchBaseReserve() for getting the latest reserve amount.
+ */
+
+const minAccountBalance = (numEntries, baseReserve) =>
+  (2 + numEntries) * baseReserve
+
+const fetchBaseReserve = server =>
+  server
+    .ledgers()
+    .limit(1)
+    .order('desc')
+    .call()
+    .then(l => l.records[0].base_reserve)
+
 const signerObj = (key, weight) => {
   return {weight: weight, type: 'ed25519_public_key', key: key, public_key: key}
 }
@@ -65,9 +85,11 @@ const withSigner = getContext({signer: PropTypes.string})
 
 export {
   accountExists,
+  fetchBaseReserve,
   keypairReadable,
   isSignedIn,
   memberList,
+  minAccountBalance,
   signerObj,
   stampMemo,
   storageInit,

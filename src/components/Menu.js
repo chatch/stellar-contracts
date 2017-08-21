@@ -21,7 +21,7 @@ const contracts = [
   {
     path: '/rosca/rotated-savings',
     name: 'ROSCA (rotated savings)',
-    description: 'Setup a "Rotated Savings" / "Merry-Go-Round style ROSCA',
+    description: 'Setup a "Rotated Savings" / "Merry-Go-Round" style ROSCA',
   },
   {
     path: '/m-of-n-todo',
