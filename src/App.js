@@ -70,7 +70,7 @@ class App extends Component {
               <Navbar.Header>
                 <Navbar.Brand>
                   <Link to="/">
-                    <span className="brand-text">Stellar Contracts</span>
+                    <span className="brand-text">Stellar Contracts Wallet</span>
                   </Link>
                 </Navbar.Brand>
                 <Navbar.Toggle />

@@ -71,7 +71,7 @@ Object {
     },
   },
   "transactions": Object {
-    "createJointAccount": Object {
+    "create": Object {
       "fake": "receipt",
     },
   },

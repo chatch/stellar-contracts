@@ -43,7 +43,7 @@ const contracts = [
 const IntroductionPanel = () =>
   <Panel bsStyle="info" header="Introduction">
     <div>
-      This site presents smart contract patterns for the{' '}
+      This is a wallet that presents smart contract patterns for the{' '}
       <a href="https://stellar.org">Stellar Network</a>. See{' '}
       <a href="https://www.stellar.org/blog/multisig-and-simple-contracts-stellar/">
         this post
