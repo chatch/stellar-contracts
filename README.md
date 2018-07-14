@@ -8,3 +8,9 @@ This site presents smart contract patterns for the [Stellar Network](https://ste
 Each contract can be deployed to the Stellar Network using the contract forms. You'll receive a JSON receipt with details of transactions, accounts created, etc.
 
 Contract forms are React components that are reusable in other sites (i will add an example setup for this).  This means you could easily drop one of these into your React or Angular (via ngReact) wallet to provide one of the contract setups to your users.
+
+## Get started
+```
+npm install
+npm start
+```
