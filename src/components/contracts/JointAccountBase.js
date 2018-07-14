@@ -127,7 +127,7 @@ class JointAccountCustom extends React.Component {
     }
 
     formData.members.forEach((member, idx) => {
-      if (!sdk.StrKey.isValidEd25519PublicKey(member)) {
+      if (!sdk.StrKey.isValidEd25519PublicKey(member.publicKey)) {
         errors.members[idx].addError(
           'Account is not a valid ed25519 public key'
         )
@@ -144,15 +144,19 @@ class JointAccountCustom extends React.Component {
     const contract = contracts.jointAccount()
     contract
       .create({
-        accountSecret: formData.account.secret,
+        accountSecret: formData.jointAccount.secretKey,
         members: formData.members,
         signerSecret: this.props.signer,
       })
       .then(receipt => {
+        console.log(`finished create`)
+
         console.log(JSON.stringify(receipt))
         this.setState({isLoading: false, receipt: receipt})
       })
       .catch(err => {
+        console.error(`create failed`)
+        console.error(err)
         this.setState({
           isLoading: false,
           error: err.detail ? err.detail : err.message,

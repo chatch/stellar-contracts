@@ -36,9 +36,11 @@ class JointAccount {
         return Promise.rejected(err)
       })
 
+    console.log(`load account`)
     const jointAccountDetails = await this.server.loadAccount(
       accountKeypair.publicKey()
     )
+    console.log(`done: ${jointAccountDetails}`)
 
     return Promise.resolve({
       jointAccount: {
@@ -60,7 +62,7 @@ class JointAccount {
     const txBuilder = new this.sdk.TransactionBuilder(signerAccount)
 
     // check if the joint account exists - if not a create_account op is needed to generate it
-    if (!await accountExists(accountKeypair.publicKey(), this.server)) {
+    if (!(await accountExists(accountKeypair.publicKey(), this.server))) {
       // see https://www.stellar.org/developers/guides/concepts/fees.html#minimum-account-balance
       const startBal = BASE_RESERVE * (members.length + 2)
       txBuilder.addOperation(
@@ -72,11 +74,11 @@ class JointAccount {
     }
 
     // Add signerSecret operations
-    members.forEach(({account, weight}) => {
-      if (account !== signerAccount.accountId()) {
+    members.forEach(({publicKey, weight}) => {
+      if (publicKey !== signerAccount.accountId()) {
         txBuilder.addOperation(
           Operation.setOptions({
-            signer: {ed25519PublicKey: account, weight: weight},
+            signer: {ed25519PublicKey: publicKey, weight: weight},
             source: accountKeypair.publicKey(),
           })
         )
