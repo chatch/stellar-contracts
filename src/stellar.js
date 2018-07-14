@@ -6,7 +6,8 @@ import sdk from 'stellar-sdk'
  *
  * ---------------------------------------------------------*/
 
-const newServer = address => new sdk.Server(address, {allowHttp: false})
+const newServer = (address, allowHttp = false) =>
+  new sdk.Server(address, {allowHttp})
 
 const usePubnetServer = () => {
   sdk.Network.usePublicNetwork()
@@ -19,7 +20,7 @@ const useTestnetServer = () => {
 }
 
 const useLocalServer = () => {
-  return newServer(networks.local.address)
+  return newServer(networks.local.address, true)
 }
 
 const networks = {

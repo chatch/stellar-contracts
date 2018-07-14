@@ -44,7 +44,7 @@ const stampMemo = () => sdk.Memo.text('Created using: git.io/v7b6s')
 const memberList = (accArr, weightsArr) =>
   accArr.map((acc, idx) => {
     const haveWeights = weightsArr && weightsArr.length === accArr.length
-    return {account: acc, weight: haveWeights ? weightsArr[idx] : 1}
+    return {publicKey: acc, weight: haveWeights ? weightsArr[idx] : 1}
   })
 
 /**
