@@ -149,13 +149,11 @@ class JointAccountCustom extends React.Component {
         signerSecret: this.props.signer,
       })
       .then(receipt => {
-        console.log(`finished create`)
-
         console.log(JSON.stringify(receipt))
         this.setState({isLoading: false, receipt: receipt})
       })
       .catch(err => {
-        console.error(`create failed`)
+        console.error(`create failed:`)
         console.error(err)
         this.setState({
           isLoading: false,

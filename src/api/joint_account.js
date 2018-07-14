@@ -36,11 +36,9 @@ class JointAccount {
         return Promise.rejected(err)
       })
 
-    console.log(`load account`)
     const jointAccountDetails = await this.server.loadAccount(
       accountKeypair.publicKey()
     )
-    console.log(`done: ${jointAccountDetails}`)
 
     return Promise.resolve({
       jointAccount: {

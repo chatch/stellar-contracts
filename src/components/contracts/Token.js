@@ -1,11 +1,12 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import {Button, Col, Grid, Panel, Row} from 'react-bootstrap'
+import {Col, Grid, Panel, Row} from 'react-bootstrap'
 import sdk from 'stellar-sdk'
 import _ from 'lodash'
 
 import Contracts from '../../api'
 import Receipt from '../Receipt'
+import CreateButton from '../CreateButton'
 import {isSignedIn, withServer, withSigner} from '../../utils'
 
 const schema = {
@@ -84,7 +85,7 @@ const uiSchema = {
   },
 }
 
-const HelpPanel = () =>
+const HelpPanel = () => (
   <Panel bsStyle="info" header="Help">
     <div>Creates a new token on the Stellar Network.</div>
     <div style={{marginTop: '1em'}}>
@@ -121,10 +122,11 @@ const HelpPanel = () =>
       </div>
     </div>
   </Panel>
+)
 
 class Token extends React.Component {
   formData = {}
-  state = {}
+  state = {isLoading: false}
 
   constructor(props) {
     super(props)
@@ -163,6 +165,8 @@ class Token extends React.Component {
   }
 
   handleOnSubmit = ({formData}) => {
+    this.setState({error: null, isLoading: true})
+
     const tokenOpts = {
       ...formData.accounts,
       ...formData.assetDetails,
@@ -172,10 +176,20 @@ class Token extends React.Component {
 
     const contracts = new Contracts(this.props.server)
     const tokenContract = contracts.token()
-    tokenContract.create(tokenOpts).then(receipt => {
-      console.log(JSON.stringify(receipt))
-      this.setState({receipt: receipt})
-    })
+    tokenContract
+      .create(tokenOpts)
+      .then(receipt => {
+        console.log(JSON.stringify(receipt))
+        this.setState({isLoading: false, receipt: receipt})
+      })
+      .catch(err => {
+        console.error(`create failed:`)
+        console.error(err)
+        this.setState({
+          isLoading: false,
+          error: err.detail ? err.detail : err.message,
+        })
+      })
   }
 
   render() {
@@ -190,9 +204,14 @@ class Token extends React.Component {
               uiSchema={uiSchema}
               validate={this.formValidate}
             >
-              <Button bsStyle="info" type="submit">
-                Create
-              </Button>
+              <CreateButton
+                errorMsg={
+                  this.state.error && typeof this.state.error === 'string'
+                    ? this.state.error
+                    : ''
+                }
+                isLoading={this.state.isLoading}
+              />
             </Form>
             {this.state.receipt && <Receipt receipt={this.state.receipt} />}
           </Col>
