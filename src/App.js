@@ -19,6 +19,7 @@ import {networks} from './stellar'
 import {storageInit} from './utils'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-json-pretty/src/JSONPretty.1337.css'
 import './App.css'
 
 const storage = storageInit()
