@@ -1,3 +1,5 @@
+NOTE: ARCHIVED - This old repository presented patterns for working with what Stellar "basic" contracts at the time. However Stellar is now introducing Soroban contracts which are much more advanced smart contracts. Archiving this first because no activity but second to avoid confusion with the new contracts.  
+
 # stellar-contracts
 [![Build Status](https://travis-ci.org/chatch/stellar-contracts.svg?branch=master)](https://travis-ci.org/chatch/stellar-contracts)
 
